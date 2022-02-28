@@ -28,7 +28,7 @@ contract StatusVCResolver {
     function _buildStatusVCState(TvmCell code, uint256 id) internal view returns(TvmCell) {
         return tvm.buildStateInit({
             contr: StatusVC,
-            varInit: _id: id,
+            varInit: {_id: id},
             code: code
         });
     }

@@ -28,7 +28,7 @@ contract VCResolver {
     function _buildVCState(TvmCell code, uint256 id) internal view returns(TvmCell) {
         return tvm.buildStateInit({
             contr: VC,
-            varInit: _id: id,
+            varInit: {_id: id},
             code: code
         });
     }
