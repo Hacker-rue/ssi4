@@ -5,6 +5,19 @@ pragma AbiHeader expire;
 
 contract StatusVC {
 
-    
+    enum status {
+        active,
+        deactivated,
+        suspended
+    }
+
+    uint256 static _id;
+
+    address issuer;
+    status _status;
+
+    constructor () public {
+        
+    }
 
 }
