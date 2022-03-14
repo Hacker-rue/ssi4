@@ -1,0 +1,25 @@
+{
+  "name": "vc_sdk",
+  "version": "1.0.0",
+  "description": "SDK - for creating, updating and verifying credentials",
+  "main": "app.js",
+  "scripts": {
+    "test": "run ./test.js"
+  },
+  "keywords": [
+    "did",
+    "VC",
+    "VP",
+    "SDK"
+  ],
+  "author": "Radiance Team",
+  "license": "ISC",
+  "dependencies": {
+    "@tonclient/appkit": "^0.3.0",
+    "@tonclient/core": "^1.30.0",
+    "@tonclient/lib-node": "^1.30.0",
+    "cheerio": "^1.0.0-rc.10",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6"
+  }
+}

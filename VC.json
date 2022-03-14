@@ -1,0 +1,15 @@
+{
+    "VC": {
+        "id": "\"id\": \"\",",
+        "type": "\"type\": [],",
+        "credentialStatus": "\"credentialStatus\": {\"id\": \"\", \"type\": \"\"}",
+        "expirationDate": "\"expirationDate\" : \"\",",
+        "issued": "",
+        "issuer": "\"issuer\": \"\",",
+        "issuanceDate": "\"issuanceDate\": \"\",",
+        "refreshService": "\"refreshService\": { \"id\": \"\", \"type\": \"\"}"
+    }
+
+    
+
+}
