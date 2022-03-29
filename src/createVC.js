@@ -31,16 +31,25 @@ module.exports = {
                     })
                 }
                 VC["proof"] = await VCSignature(VC, issuerDID, secretKey)
-
-                console.log(VC)
+                resolve(VC)
             } catch(er) {
                 reject(er)
             }
         })
     },
 
-    verifyVC: async (VC) => {
-        
+    verifyVC: async (VC, publicKey) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                proof = VC["proof"]
+                delete VC["proof"]
+                console.log(proof["proofValue"])
+
+                resolve(await verifyMessage(proof["proofValue"], JSON.stringify(VC), publicKey))
+            } catch(er) {
+                reject(er)
+            }
+        })
     }
 
     

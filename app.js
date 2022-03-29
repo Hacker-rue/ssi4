@@ -2,8 +2,11 @@ const { TonClient, signerKeys, signerNone } = require('@tonclient/core')
 const { Account } = require('@tonclient/appkit')
 const { libNode } = require('@tonclient/lib-node')
 
+const ed = require("noble-ed25519")
+
 const parser = require('./src/parserSchema')
 const create = require('./src/createVC')
+const createVC = require('./src/createVC')
 
 module.exports = {
     VC: class {
@@ -33,6 +36,16 @@ module.exports = {
                 }
             })
         }
+
+        async verifyVC(VC, publicKey) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    resolve(await create.verifyVC(VC, publicKey))
+                } catch(er) {
+                    reject(er)
+                }
+            })
+        }
     
     }
 }
@@ -49,7 +62,15 @@ async function main() {
         "C"
     ]
 
-    await create.createVC(issuerDID, issuanceDate, userDID, category, "675ff27556ee27d4b0d78e89d351fe6c01f9d46ca3fe44bec04006650ac1f127")
+    var VC = await create.createVC(issuerDID, issuanceDate, userDID, category, "2598ee42937f0c07fd0c0bb2bd966da904359cb29964d18035615208a0245802")
+    var publicKey = await ed.getPublicKey("2598ee42937f0c07fd0c0bb2bd966da904359cb29964d18035615208a0245802")
+    console.log(publicKey)
+
+    console.log(await createVC.verifyVC(VC, "12121212", publicKey))
+    
+
 }
+
+
 
 main()
