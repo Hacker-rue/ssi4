@@ -21,38 +21,70 @@ module.exports = {
     },
 
     setStatus: async (statusVCAccount, userAccount, status) => {
-        try {
-            var { body } = (await TonClient.default.abi.encode_message_body({
-                abi: statusVCAccount.abi,
-                call_set: {
-                    function_name: "setStatus",
-                    input: {
-                        Status: status
-                    }
-                },
-                is_internal: true,
-                signer: signerNone()
-            }))
+        return new Promise(async (resolve, reject) => {
+            try {
+                var { body } = (await TonClient.default.abi.encode_message_body({
+                    abi: statusVCAccount.abi,
+                    call_set: {
+                        function_name: "setStatus",
+                        input: {
+                            Status: status
+                        }
+                    },
+                    is_internal: true,
+                    signer: signerNone()
+                }))
+    
+                var ress =  await userAccount.run("sendTransaction", {
+                    dest: await statusVCAccount.getAddress(),
+                    value: 200000000,
+                    bounce: true,
+                    flags: 0,
+                    payload: body
+                })
+                resolve(ress)
+            } catch(er) {
+                reject(er)
+            }
+        })
+    },
 
-            
-        } catch(er) {
+    destruct: async (statusVCAccount, userAccount) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                var { body } = (await TonClient.default.abi.encode_message_body({
+                    abi: statusVCAccount.abi,
+                    call_set: {
+                        function_name: "destruct"
+                    },
+                    is_internal: true,
+                    signer: signerNone()
+                }))
 
-        }
+                var ress = await userAccount.run("sendTransaction", {
+                    dest: await statusVCAccount.getAddress(),
+                    value: 200000000,
+                    bounce: true,
+                    flags: 0,
+                    payload: body
+                })
+                resolve(ress)
+            } catch(er) {
+                reject(er)
+            }
+        })
+    },
+
+    getInfo: async (statusVCAccount) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                var ress = await statusVCAccount.runLocal("getInfo")
+
+                resolve(ress)
+            } catch(er) {
+                reject(er)
+            }
+        })
     }
 
 }
-
-var { body } = (await TonClient.default.abi.encode_message_body({
-    abi: abi,
-    call_set: call_set,
-    is_internal: is_internal,
-    signer: signer
-}))
-
-body = await send.buildPayload(storageCotract.abi, {
-    function_name: "addDid",
-    input: {
-        pubKey: id,
-        didDocument: didDocument
-    }
-}, true, signerNone())
