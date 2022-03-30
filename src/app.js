@@ -5,13 +5,13 @@ const { libNode } = require('@tonclient/lib-node')
 const ed = require("noble-ed25519")
 
 const parser = require('./src/parserSchema')
-const create = require('./src/createVC')
-const createVC = require('./src/createVC')
+const create = require('./modules/moduleVC')
+const createVC = require('./modules/moduleVC')
 
 module.exports = {
     VC: class {
 
-        constructor(uri, requiredParameters, credentialSubject) {
+        constructor(uri = null, requiredParameters, credentialSubject) {
             this.uri = uri
             this.requiredParameters = requiredParameters
             this.credentialSubject = credentialSubject
