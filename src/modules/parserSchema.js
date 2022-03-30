@@ -1,5 +1,5 @@
 const rp = require('request-promise')
-const JsonVC = require('../VC.json')
+const JsonVC = require('../data/VC.json')
 
 module.exports = {
 
