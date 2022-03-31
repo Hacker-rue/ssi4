@@ -1,31 +1,76 @@
-const { generateKeyPairSync, createSign, createVerify } = require('crypto')
 const sha256 = require('crypto-js/sha256.js')
 const ed = require("noble-ed25519")
 
+module.exports = {
+    VC: class {
 
+        constructor(uri = null, requiredParameters, credentialSubject) {
+            this.uri = uri
+            this.requiredParameters = requiredParameters
+            this.credentialSubject = credentialSubject
+        }
+    
+        async getMetadataVC() {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    resolve(await parser.getMetadataVC(this.requiredParameters, this.credentialSubject))
+                } catch(er) {
+                    reject(er)
+                }
+            })
+        }
+
+        async createVC(issuerDID, issuanceDate, userDID, category, secretKey, credentialStatus) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    resolve(await create.createVC(issuerDID, issuanceDate, userDID, category, secretKey, credentialStatus))
+                } catch(er) {
+                    reject(er)
+                }
+            })
+        }
+
+        async verifyVC(VC, publicKey) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    resolve(await create.verifyVC(VC, publicKey))
+                } catch(er) {
+                    reject(er)
+                }
+            })
+        }
+
+        async getStatusVC(VC) {
+
+        }
+    
+    }
+}
 
 
 module.exports = {
 
-    createVC: async (issuerDID, issuanceDate, userDID, category, secretKey, credentialStatus) => {
-        var VC = {
-            '@context': [
-                "https://www.w3.org/2018/credentials/v1",
-            ],
-            "type": ["VerifiableCredential", "DriverCredential"],
-            "issuer": issuerDID,
-            "issuanceDate": issuanceDate,
-            "credentialSubject": {
-                "id": userDID,
-                "category": [
 
-                ]
-            },
-            "credentialStatus": credentialStatus
-        }
 
+    createVC: async (issuerDID, issuanceDate, userDID, category, credentialStatus, secretKey) => {
         return new Promise(async (resolve, reject) => {
             try {
+                var VC = {
+                    '@context': [
+                        "https://www.w3.org/2018/credentials/v1",
+                    ],
+                    "type": ["VerifiableCredential", "DriverCredential"],
+                    "issuer": issuerDID,
+                    "issuanceDate": issuanceDate,
+                    "credentialSubject": {
+                        "id": userDID,
+                        "category": [
+        
+                        ]
+                    },
+                    "credentialStatus": credentialStatus
+                }
+
                 for(i = 0; i < category.length; i++) {
                     VC.credentialSubject.category.push({
                         "Value": category[i]
@@ -34,7 +79,7 @@ module.exports = {
                 VC["proof"] = await VCSignature(VC, issuerDID, secretKey)
                 resolve(VC)
             } catch(er) {
-                reject(er)
+                console.log(er)
             }
         })
     },
@@ -44,7 +89,6 @@ module.exports = {
             try {
                 proof = VC["proof"]
                 delete VC["proof"]
-                console.log(proof["proofValue"])
 
                 resolve(await verifyMessage(proof["proofValue"], JSON.stringify(VC), publicKey))
             } catch(er) {
