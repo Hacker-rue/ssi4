@@ -54,17 +54,39 @@ module.exports = {
     statusVC: class {
 
         constructor (client, address) {
-            this.statusVCRoot = statusVCRootAPI.createAccountStatusVCRoot(address, client)
+            this.statusVCRoot = new Account(StatusVCRootContract, {
+                address: address, 
+                client: client
+            })
+            this.client = client
         }
 
         async createStatus(userAccount) {
             return new Promise(async (resolve, reject) => {
                 try {
+                    var ress = await statusVCRootAPI.getInfo(this.statusVCRoot)
+
                     await statusVCRootAPI.createStatusVC(this.statusVCRoot, userAccount)
+                    resolve(await this.statusVCRoot.getAddress() + "/" + parseInt(ress.id))
+                } catch(er) {
+                    reject(er)
+                }
+            })
+        }
 
-                    var ress = await statusVCAPI.getInfo(this.statusVCRoot)
-
+        async getStatus(credentialStatus) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    credentialStatus = credentialStatus.split("/")
+                    if(credentialStatus[0] != await this.statusVCRoot.getAddress()) {
+                        reject("ERROR: You have specified an invalid credentialStatus!")
+                    }
+                    var addressStatusVC = await statusVCRootAPI.resolveStatusVC(this.statusVCRoot, parseInt(credentialStatus[1]))
                     
+                    var statusVC = await statusVCAPI.createAccountStatusVC(addressStatusVC, this.client)
+
+                    var ress = await statusVCAPI.getInfo(statusVC)
+                    resolve(ress.Status)
                 } catch(er) {
                     reject(er)
                 }

@@ -22,10 +22,10 @@ module.exports = {
             })
         }
 
-        async createVC(issuerDID, issuanceDate, userDID, category, secretKey) {
+        async createVC(issuerDID, issuanceDate, userDID, category, secretKey, credentialStatus) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    resolve(await create.createVC(issuerDID, issuanceDate, userDID, category, secretKey))
+                    resolve(await create.createVC(issuerDID, issuanceDate, userDID, category, secretKey, credentialStatus))
                 } catch(er) {
                     reject(er)
                 }
@@ -43,7 +43,7 @@ module.exports = {
         }
 
         async getStatusVC(VC) {
-            
+
         }
     
     }

@@ -2,14 +2,14 @@ const { Account } = require('@tonclient/appkit');
 const { TonClient, signerKeys, signerNone } = require('@tonclient/core')
 const { libNode } = require('@tonclient/lib-node')
 
-
+const { StatusVCRootContract } = require('../../build/StatusVCRootContract')
 
 module.exports = {
     
     createAccountStatusVCRoot: async (address, client) => {
         return new Promise(async (resolve, reject) => {
             try {
-                resolve(new Account(StatusVCContract, {
+                resolve(new Account(StatusVCRootContract, {
                         address: address,
                         signer: signerNone(),
                         client: client
@@ -61,7 +61,7 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             try {
                 var ress = await statusVCRootAccount.runLocal("resolveCodeHashStatusVC")
-                resolve(ress)
+                resolve(ress.decoded.output.value0)
             } catch(er) {
                 reject(er)
             }
@@ -71,10 +71,10 @@ module.exports = {
     resolveStatusVC: async (statusVCRootAccount, id) => {
         return new Promise(async (resolve, reject) => {
             try {
-                var ress = await statusVCRootAccount.runLocal("resolveCodeHashStatusVC", {
+                var ress = await statusVCRootAccount.runLocal("resolveStatusVC", {
                     id: id
                 })
-                resolve(ress)
+                resolve(ress.decoded.output.addrStatusVC)
             } catch(er) {
                 reject(er)
             }

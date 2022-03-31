@@ -7,7 +7,7 @@ const ed = require("noble-ed25519")
 
 module.exports = {
 
-    createVC: async (issuerDID, issuanceDate, userDID, category, secretKey) => {
+    createVC: async (issuerDID, issuanceDate, userDID, category, secretKey, credentialStatus) => {
         var VC = {
             '@context': [
                 "https://www.w3.org/2018/credentials/v1",
@@ -20,7 +20,8 @@ module.exports = {
                 "category": [
 
                 ]
-            }
+            },
+            "credentialStatus": credentialStatus
         }
 
         return new Promise(async (resolve, reject) => {
