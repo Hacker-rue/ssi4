@@ -41,6 +41,10 @@ module.exports = {
                 }
             })
         }
+
+        async getStatusVC(VC) {
+            
+        }
     
     }
 }

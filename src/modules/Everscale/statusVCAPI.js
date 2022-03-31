@@ -80,7 +80,7 @@ module.exports = {
             try {
                 var ress = await statusVCAccount.runLocal("getInfo")
 
-                resolve(ress)
+                resolve(ress.decoded.output)
             } catch(er) {
                 reject(er)
             }

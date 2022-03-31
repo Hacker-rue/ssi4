@@ -2,8 +2,10 @@ const { Account } = require('@tonclient/appkit');
 const { TonClient, signerKeys, signerNone } = require('@tonclient/core')
 const { libNode } = require('@tonclient/lib-node')
 
-module.exports = {
 
+
+module.exports = {
+    
     createAccountStatusVCRoot: async (address, client) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -48,7 +50,7 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             try {
                 var ress = await statusVCRootAccount.runLocal("getInfo")
-                resolve(ress)
+                resolve(ress.decoded.output)
             } catch(er) {
                 reject(er)
             }
