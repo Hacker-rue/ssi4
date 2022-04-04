@@ -1,56 +1,10 @@
 const sha256 = require('crypto-js/sha256.js')
 const ed = require("noble-ed25519")
 
-module.exports = {
-    VC: class {
-
-        constructor(uri = null, requiredParameters, credentialSubject) {
-            this.uri = uri
-            this.requiredParameters = requiredParameters
-            this.credentialSubject = credentialSubject
-        }
-    
-        async getMetadataVC() {
-            return new Promise(async (resolve, reject) => {
-                try {
-                    resolve(await parser.getMetadataVC(this.requiredParameters, this.credentialSubject))
-                } catch(er) {
-                    reject(er)
-                }
-            })
-        }
-
-        async createVC(issuerDID, issuanceDate, userDID, category, secretKey, credentialStatus) {
-            return new Promise(async (resolve, reject) => {
-                try {
-                    resolve(await create.createVC(issuerDID, issuanceDate, userDID, category, secretKey, credentialStatus))
-                } catch(er) {
-                    reject(er)
-                }
-            })
-        }
-
-        async verifyVC(VC, publicKey) {
-            return new Promise(async (resolve, reject) => {
-                try {
-                    resolve(await create.verifyVC(VC, publicKey))
-                } catch(er) {
-                    reject(er)
-                }
-            })
-        }
-
-        async getStatusVC(VC) {
-
-        }
-    
-    }
-}
-
+const AES = require("crypto-js/aes");
+const Utf8 = require('crypto-js/enc-utf8');
 
 module.exports = {
-
-
 
     createVC: async (issuerDID, issuanceDate, userDID, category, credentialStatus, secretKey) => {
         return new Promise(async (resolve, reject) => {
@@ -79,7 +33,7 @@ module.exports = {
                 VC["proof"] = await VCSignature(VC, issuerDID, secretKey)
                 resolve(VC)
             } catch(er) {
-                console.log(er)
+                reject(er)
             }
         })
     },
@@ -95,7 +49,30 @@ module.exports = {
                 reject(er)
             }
         })
-    }
+    },
+
+    encryptVerifiableCredential: async (verifiableCredential, secretKey) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                resolve(AES.encrypt(JSON.stringify(verifiableCredential), secretKey).toString())
+            } catch(er) {
+                reject(er)
+            }
+        })
+    },
+
+    decryptVerifiableCredential: async (cipherVC, secretKey) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                var bytes = AES.decrypt(cipherVC, secretKey);
+                resolve(JSON.parse(bytes.toString(Utf8)))
+            } catch(er) {
+                reject(er)
+            }
+        })
+    },
+
+    
 
     
 
