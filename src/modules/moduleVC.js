@@ -1,5 +1,5 @@
-const sha256 = require('crypto-js/sha256.js')
 const ed = require("noble-ed25519")
+const sha256 = require("crypto-js/sha256")
 
 const AES = require("crypto-js/aes");
 const Utf8 = require('crypto-js/enc-utf8');
@@ -44,7 +44,7 @@ module.exports = {
                 proof = VC["proof"]
                 delete VC["proof"]
 
-                resolve(await verifyMessage(proof["proofValue"], JSON.stringify(VC), publicKey))
+                resolve(await verifyData(proof["proofValue"], JSON.stringify(VC), publicKey))
             } catch(er) {
                 reject(er)
             }
@@ -62,6 +62,13 @@ module.exports = {
     },
 
     decryptVerifiableCredential: async (cipherVC, secretKey) => {
+        try {
+            var bytes = AES.decrypt(cipherVC, secretKey); 
+            return JSON.parse(bytes.toString(Utf8));
+        }
+        catch (e) {
+            console.log(e);
+        }
         return new Promise(async (resolve, reject) => {
             try {
                 var bytes = AES.decrypt(cipherVC, secretKey);
@@ -72,7 +79,7 @@ module.exports = {
         })
     },
 
-    
+
 
     
 
@@ -102,7 +109,7 @@ async function signData(msg, secretKey){
     return await ed.sign(msgHash, secretKey);
 }
 
-async function verifyMessage(signatureHex, msg, publicKey){
+async function verifyData(signatureHex, msg, publicKey){
 
     const msgHash = sha256(msg).toString();
 

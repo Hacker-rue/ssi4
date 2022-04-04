@@ -7,6 +7,7 @@ const statusVCAPI = require('./Everscale/statusVCAPI')
 
 const { StatusVCContract } = require('../build/StatusVCContract')
 const { StatusVCRootContract } = require('../build/StatusVCRootContract')
+const { VCContract } = require('../build/VCContract')
 
 
 module.exports = {
@@ -41,6 +42,47 @@ module.exports = {
                     initInput: {
                         codeStatusVC: StatusVCContract.code,
                         issuer: issuerAddress
+                    }
+                })
+
+                resolve(ress)
+            } catch(er) {
+                reject(er)
+            }
+        })
+    },
+
+    newAddressVC: async (client) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                var account = new Account(VCContract, {
+                    signer: signerKeys(await client.crypto.generate_random_sign_keys()),
+                    client: client
+                })
+                resolve({
+                    address: await account.getAddress(),
+                    keys: account.signer.keys
+                })
+            } catch(er) {
+                reject(er)
+            }
+        })
+    },
+
+    deployVC: async (address, keys, client, ownerAddress, type, value) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                var account = new Account(VCContract, {
+                    address: address,
+                    signer: signerKeys(keys),
+                    client: client
+                })
+
+                var ress = await account.deploy({
+                    initInput: {
+                        owner: ownerAddress,
+                        Type: type,
+                        value: value
                     }
                 })
 
