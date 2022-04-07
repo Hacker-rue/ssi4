@@ -9,7 +9,7 @@ module.exports = {
     createAccountVC: async (address, client) => {
         return new Promise(async (resolve, reject) => {
             try {
-                resolve(new Account(StatusVCContract, {
+                resolve(new Account(VCContract, {
                     address: address,
                     signer: signerNone(),
                     client: client
