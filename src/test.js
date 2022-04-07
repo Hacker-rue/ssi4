@@ -32,3 +32,27 @@ const userAccount = new Account(ClientContract, {
 
 const statusVCRoot = new moduleEver.statusVC(client, "0:31e80c7c5ccfa5a6ed7ddfbcb3fb4cca624aa59be17680d6f122931510ed0044")
 
+
+
+async function main() {
+    try {
+        console.log(await userAccount.runLocal("getPubKey"))
+
+        var vcDocument = await moduleVC.createVC("https://example.com/issuer/", "2010-01-01T00:00:00Z", 
+        "did:everscale:4e50f5c94c33a7bb6a2d55e1d9ecdd4a06b5d289417c880c48afc99ccfe72736", ["A", "A1"], 
+        "0:31e80c7c5ccfa5a6ed7ddfbcb3fb4cca624aa59be17680d6f122931510ed0044/0", "961502adae3a781c6604a3eebfdae6aef4024a233b37a6a36e3e856fdef43a3c")
+        console.log(await statusVCRoot.createStatus(userAccount))
+        console.log(vcDocument)
+
+        console.log(await statusVCRoot.getStatus(vcDocument.credentialStatus))
+
+        var signature = await moduleVC.encryptVerifiableCredential(JSON.stringify(vcDocument), userAccount.signer.keys.secret)
+        console.log(signature)
+    } catch(er) {
+        console.log(er)
+    }
+
+
+}
+
+main()
