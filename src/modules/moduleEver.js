@@ -128,7 +128,13 @@ module.exports = {
                     var statusVC = await statusVCAPI.createAccountStatusVC(addressStatusVC, this.client)
 
                     var ress = await statusVCAPI.getInfo(statusVC)
-                    resolve(ress.Status)
+                    if(ress.Status == 0) {
+                        resolve("active")
+                    } else if(ress.Status == 1) {
+                        resolve("deactivated")
+                    } else {
+                        resolve("suspended")
+                    }
                 } catch(er) {
                     reject(er)
                 }

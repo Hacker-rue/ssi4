@@ -30,6 +30,5 @@ const userAccount = new Account(ClientContract, {
     client: client
 })
 
-async function createAccountStatusVCRoot() {
-    
-}
+const statusVCRoot = new moduleEver.statusVC(client, "0:31e80c7c5ccfa5a6ed7ddfbcb3fb4cca624aa59be17680d6f122931510ed0044")
+
