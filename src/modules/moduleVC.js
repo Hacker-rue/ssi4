@@ -51,6 +51,18 @@ module.exports = {
         })
     },
 
+    verifyStatusVC: async () => {
+
+    },
+
+    verifyIssuanceDateVC: async () => {
+
+    },
+
+    verifiExpirationDateVC: async () => {
+
+    },
+
     encryptVerifiableCredential: async (verifiableCredential, secretKey) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -77,7 +89,9 @@ module.exports = {
                 reject(er)
             }
         })
-    },
+    }
+
+
 
 
 
