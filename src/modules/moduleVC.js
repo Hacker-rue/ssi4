@@ -4,6 +4,8 @@ const sha256 = require("crypto-js/sha256")
 const AES = require("crypto-js/aes");
 const Utf8 = require('crypto-js/enc-utf8');
 
+const moduleEver = require("./moduleEver");
+
 module.exports = {
 
     createVC: async (issuerDID, issuanceDate, userDID, category, credentialStatus, secretKey) => {
@@ -51,16 +53,50 @@ module.exports = {
         })
     },
 
-    verifyStatusVC: async () => {
+    verifyStatusVC: async (credentialStatus, statusVC) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                var status = statusVC.getStatus(credentialStatus)
 
+                if(status == "active") {
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
+            } catch(er) {
+                reject(er)
+            }
+        })
     },
 
-    verifyIssuanceDateVC: async () => {
-
+    verifyIssuanceDateVC: async (IssuanceDate) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                var nowDate = new Date()
+                if(new Date(IssuanceDate).valueOf() <= nowDate.valueOf()) {
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
+            } catch(er) {
+                reject(er)
+            }
+        })
     },
 
-    verifiExpirationDateVC: async () => {
-
+    verifiExpirationDateVC: async (ExpirationDate) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                var nowDate = new Date()
+                if(new Date(ExpirationDate).valueOf() >= nowDate.valueOf()) {
+                    resolve(true)
+                } else {
+                    reject(false)
+                }
+            } catch(er) {
+                reject(er)
+            }
+        })
     },
 
     encryptVerifiableCredential: async (verifiableCredential, secretKey) => {
@@ -104,7 +140,7 @@ async function VCSignature (VC, issuerDID, secretKey) {
         try {
             var proof = {
                 "type": "Ed25519Signature2020",
-                "created": await getDate(),
+                "created": (new Date()).toJSON(),
                 "verificationMethod": issuerDID,
                 "proofPurpose": "assertionMethod",
                 "proofValue": await signData(JSON.stringify(VC), secretKey)
