@@ -20,11 +20,11 @@ module.exports = {
         })
     },
 
-    setStatus: async (statusVCAccount, userAccount, status) => {
+    setStatus: async (statusVCAddress, userAccount, status) => {
         return new Promise(async (resolve, reject) => {
             try {
                 var { body } = (await TonClient.default.abi.encode_message_body({
-                    abi: statusVCAccount.abi,
+                    abi: { type: "Contract", value: StatusVCContract.abi },
                     call_set: {
                         function_name: "setStatus",
                         input: {
@@ -36,7 +36,7 @@ module.exports = {
                 }))
     
                 var ress =  await userAccount.run("sendTransaction", {
-                    dest: await statusVCAccount.getAddress(),
+                    dest: statusVCAddress,
                     value: 200000000,
                     bounce: true,
                     flags: 0,
@@ -49,11 +49,37 @@ module.exports = {
         })
     },
 
-    destruct: async (statusVCAccount, userAccount) => {
+    deactivate: async (statusVCAddress, userAccount) => {
         return new Promise(async (resolve, reject) => {
             try {
                 var { body } = (await TonClient.default.abi.encode_message_body({
-                    abi: statusVCAccount.abi,
+                    abi: { type: "Contract", value: StatusVCContract.abi },
+                    call_set: {
+                        function_name: "deactivate"
+                    },
+                    is_internal: true,
+                    signer: signerNone()
+                }))
+    
+                var ress =  await userAccount.run("sendTransaction", {
+                    dest: statusVCAddress,
+                    value: 200000000,
+                    bounce: true,
+                    flags: 0,
+                    payload: body
+                })
+                resolve(ress)
+            } catch(er) {
+                reject(er)
+            }
+        })
+    },
+
+    destruct: async (statusVCAddress, userAccount) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                var { body } = (await TonClient.default.abi.encode_message_body({
+                    abi: { type: "Contract", value: StatusVCContract.abi },
                     call_set: {
                         function_name: "destruct"
                     },
@@ -62,8 +88,8 @@ module.exports = {
                 }))
 
                 var ress = await userAccount.run("sendTransaction", {
-                    dest: await statusVCAccount.getAddress(),
-                    value: 200000000,
+                    dest: statusVCAddress,
+                    value: 100000000,
                     bounce: true,
                     flags: 0,
                     payload: body

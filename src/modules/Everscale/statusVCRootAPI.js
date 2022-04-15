@@ -20,20 +20,23 @@ module.exports = {
         })
     },
 
-    createStatusVC: async (statusVCRootAccount, userAccount) => {
+    createStatusVC: async (statusVCRootAddress, userAccount, holder) => {
         return new Promise(async (resolve, reject) => {
             try {
                 var { body } = (await TonClient.default.abi.encode_message_body({
-                    abi: statusVCRootAccount.abi,
+                    abi: { type: "Contract", value: StatusVCRootContract.abi },
                     call_set: {
-                        function_name: "createStatusVC"
+                        function_name: "createStatusVC",
+                        input: {
+                            holder: holder
+                        }
                     },
                     is_internal: true,
                     signer: signerNone()
                 }))
     
                 var ress =  await userAccount.run("sendTransaction", {
-                    dest: await statusVCRootAccount.getAddress(),
+                    dest: statusVCRootAddress,
                     value: 400000000,
                     bounce: true,
                     flags: 0,
