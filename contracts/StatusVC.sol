@@ -14,9 +14,10 @@ contract StatusVC {
     uint256 static _id;
 
     address _issuer;
+    address _holder;
     status _status;
 
-    constructor (address issuer) public {
+    constructor (address issuer, address holder, address sendToGas) public {
         optional(TvmCell) optSalt = tvm.codeSalt(tvm.code());
         require(optSalt.hasValue());
         (address StatusVCRoot) = optSalt.get().toSlice().decode(address);
@@ -25,11 +26,27 @@ contract StatusVC {
         tvm.rawReserve(0.1 ton, 0);
 
         _issuer = issuer;
+        _holder = holder;
         _status = status.active;
+
+        sendToGas.transfer({value:0, flag:128});
     }
 
-    function setStatus(status Status) public onlyOwner() {
+    function setStatus(status Status) public onlyOwner() checkStatus() {
+        require(msg.value >= 0.15 ton);
+        
         _status = Status;
+
+        msg.sender.transfer({value: 0, flag:64});
+    }
+
+    function deactivate() public checkStatus() {
+        require(msg.value >= 0.15 ton);
+        require(msg.sender == _issuer || msg.sender == _holder);
+
+        _status = status.deactivated;
+
+        msg.sender.transfer({value:0, flag: 64});
     }
 
     function destruct() public onlyOwner() {
@@ -48,6 +65,11 @@ contract StatusVC {
 
     modifier onlyOwner() {
         require(msg.sender == _issuer);
+        _;
+    }
+
+    modifier checkStatus() {
+        require(_status != status.deactivated);
         _;
     }
 

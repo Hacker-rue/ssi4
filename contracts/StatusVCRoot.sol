@@ -16,14 +16,14 @@ contract StatusVCRoot is StatusVCResolver {
         _codeStatusVC = codeStatusVC;
     }
 
-    function createStatusVC() public {
+    function createStatusVC(address holder) public {
         require(msg.value >= 0.35 ton);
         TvmCell code = _buildStatusVCCode();
         TvmCell state = _buildStatusVCState(code, _id);
         new StatusVC {
             stateInit: state,
-            value: 0.3 ton
-        } (_issuer);
+            value: 0.25 ton
+        } (_issuer, holder, msg.sender);
 
         _id++;
 

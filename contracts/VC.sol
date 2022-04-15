@@ -11,6 +11,7 @@ contract VC {
     string _value;
 
     constructor(address owner, string Type, string value) public {
+        require(msg.pubkey() == tvm.pubkey());
         tvm.accept();
 
         _owner = owner;
@@ -19,7 +20,7 @@ contract VC {
     }
 
     function setValue(string Type, string value) public onlyOwner() {
-        require(msg.value >= 0.2 ton);
+        require(msg.value >= 0.25 ton);
 
         _type = Type;
         _value = value;
@@ -28,7 +29,6 @@ contract VC {
     }
 
     function destruct() public onlyOwner() {
-        require(msg.value >= 0.1 ton);
         selfdestruct(msg.sender);
     }
 
