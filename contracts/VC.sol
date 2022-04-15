@@ -5,56 +5,38 @@ pragma AbiHeader expire;
 
 contract VC {
 
-    uint256 static _id;
-
     address _owner;
 
     string _type;
-    uint8 _size;
-    mapping(uint8 => bytes) _value;
+    string _value;
 
-    constructor() public {
-        optional(TvmCell) optSalt = tvm.codeSalt(tvm.code());
-        require(optSalt.hasValue());
-        (address owner) = optSalt.get().toSlice().decode(address);
-        require(owner != address(0));
-        require(msg.value >= 0.2 ton);
-        tvm.rawReserve(0.1 ton, 0);
+    constructor(address owner, string Type, string value) public {
+        tvm.accept();
 
         _owner = owner;
-
-        _owner.transfer({value: 0, flag: 128});
-    }
-
-    function setType(string Type) public onlyOwner() {
         _type = Type;
-
-        msg.sender.transfer({value: 0, flag: 64});
+        _value = value;
     }
 
-    function setSize(uint8 size) public onlyOwner() {
-        _size = size;
+    function setValue(string Type, string value) public onlyOwner() {
+        require(msg.value >= 0.2 ton);
 
-        msg.sender.transfer({value: 0, flag: 64});
-    }
-
-    function setValue(uint8 number, bytes value) public onlyOwner() {
-        _value[number] = value;
+        _type = Type;
+        _value = value;
 
         msg.sender.transfer({value: 0, flag: 64});
     }
 
     function destruct() public onlyOwner() {
+        require(msg.value >= 0.1 ton);
         selfdestruct(msg.sender);
     }
 
-    function getInfo() public view onlyOwner() returns(
+    function getInfo() public view returns(
         string Type,
-        uint8 size,
-        mapping(uint8 => bytes) value) 
+        string value) 
     {
         Type = _type;
-        size = _size;
         value = _value;
     }
 

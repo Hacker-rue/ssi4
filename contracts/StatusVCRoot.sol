@@ -6,20 +6,18 @@ pragma AbiHeader expire;
 import "./resolvers/StatusVCResolver.sol";
 
 contract StatusVCRoot is StatusVCResolver {
-    uint256 _id;
+    uint256 _id = 0;
 
     address _issuer;
 
-    constructor(address issuer, TvmCell codeStatusVC) public {
+    constructor(TvmCell codeStatusVC, address issuer) public {
         tvm.accept();
-
         _issuer = issuer;
         _codeStatusVC = codeStatusVC;
     }
 
-    function createStatusVC() public returns(
-        address statusVC
-    ) {
+    function createStatusVC() public {
+        require(msg.value >= 0.35 ton);
         TvmCell code = _buildStatusVCCode();
         TvmCell state = _buildStatusVCState(code, _id);
         new StatusVC {
@@ -29,7 +27,7 @@ contract StatusVCRoot is StatusVCResolver {
 
         _id++;
 
-        statusVC = address.makeAddrStd(0, tvm.hash(state));
+        msg.sender.transfer({value:0, flag: 64});
     }
 
     function getInfo() public view returns(
