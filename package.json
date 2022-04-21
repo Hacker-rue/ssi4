@@ -1,28 +1,27 @@
 {
-  "name": "vc_sdk",
+  "name": "@radianceteam/vc",
   "version": "1.0.0",
-  "description": "SDK - for creating, updating and verifying credentials",
+  "description": "Library of Verifiable Credentials on the Everscale blockchain for JavaScript",
   "main": "app.js",
   "scripts": {
-    "test": "run ./test.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.defispace.com/ssi-4/everscale-vc-sdk.git"
   },
   "keywords": [
-    "did",
-    "VC",
-    "VP",
-    "SDK"
+    "Verifiable Credentials",
+    "JSON"
   ],
-  "author": "Radiance Team",
+  "author": "RADIANCETEAM",
   "license": "ISC",
   "dependencies": {
     "@tonclient/appkit": "^0.3.0",
     "@tonclient/core": "^1.30.0",
     "@tonclient/lib-node": "^1.30.0",
-    "cheerio": "^1.0.0-rc.10",
     "crypto-js": "^4.1.1",
     "jsonld": "^5.2.0",
-    "noble-ed25519": "^1.2.6",
-    "request": "^2.88.2",
-    "request-promise": "^4.2.6"
+    "noble-ed25519": "^1.2.6"
   }
 }
