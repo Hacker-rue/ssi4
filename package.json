@@ -20,6 +20,7 @@
     "@tonclient/lib-node": "^1.30.0",
     "cheerio": "^1.0.0-rc.10",
     "crypto-js": "^4.1.1",
+    "jsonld": "^5.2.0",
     "noble-ed25519": "^1.2.6",
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
