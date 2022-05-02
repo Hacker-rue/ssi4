@@ -1,0 +1,9 @@
+{
+    "@context": {
+
+        "params": "",
+
+        "credentialStatus": {"@id": "params:credentialStatus", "@type": "@id"},
+        "age": {"@id": "params:age", "@type": "@id"}
+    }
+}
