@@ -11,7 +11,7 @@ const VCContract = {
                 "name": "constructor",
                 "inputs": [
                     {
-                        "name": "owner",
+                        "name": "addrOwner",
                         "type": "address"
                     },
                     {
@@ -21,6 +21,10 @@ const VCContract = {
                     {
                         "name": "value",
                         "type": "string"
+                    },
+                    {
+                        "name": "codeIndexVC",
+                        "type": "cell"
                     }
                 ],
                 "outputs": []
@@ -57,6 +61,40 @@ const VCContract = {
                         "type": "string"
                     }
                 ]
+            },
+            {
+                "name": "resolveCodeHashIndexVC",
+                "inputs": [
+                    {
+                        "name": "addrOwner",
+                        "type": "address"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "value0",
+                        "type": "uint256"
+                    }
+                ]
+            },
+            {
+                "name": "resolveIndexVC",
+                "inputs": [
+                    {
+                        "name": "addrOwner",
+                        "type": "address"
+                    },
+                    {
+                        "name": "addrVC",
+                        "type": "address"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "addrIndexVC",
+                        "type": "address"
+                    }
+                ]
             }
         ],
         "data": [],
@@ -75,7 +113,11 @@ const VCContract = {
                 "type": "bool"
             },
             {
-                "name": "_owner",
+                "name": "_codeIndexVC",
+                "type": "cell"
+            },
+            {
+                "name": "_addrOwner",
                 "type": "address"
             },
             {
@@ -88,8 +130,8 @@ const VCContract = {
             }
         ]
     },
-    tvc: "te6ccgECFgEAAsQAAgE0AwEBAcACAEPQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgBCSK7VMg4wMgwP/jAiDA/uMC8gsTBQQVAu7tRNDXScMB+GaNCGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAT4aSHbPNMAAY4SgQIA1xgg+QFY+EIg+GX5EPKo3tM/AfhDIbnytCD4I4ED6KiCCBt3QKC58rT4Y9MfAfgjvPK50x8B2zz4R27yfAgGA1jtRNDXScMB+GYi0NMD+kAw+GmpOADcIccA4wIh1w0f8rwh4wMB2zz4R27yfBISBgRQIIIQFiYdULrjAiCCEEfGLdq64wIgghBLDZPluuMCIIIQbAEi07rjAg4MCgcCejD4Qm7jAPhG8nP6QZXU0dD6QN8g10rAAZPU0dDe1NTR+EUgbpIwcN74Qrry4GT4AFj4agH4a/hs2zx/+GcIDwIW7UTQ10nCAYqOgOIRCQKAcO1E0PQFjQhgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE+GqI+GuI+GyAQPQO8r3XC//4YnD4YxUVA3Aw+Eby4Ez4Qm7jANHbPCKOHyTQ0wH6QDAxyM+HIM6AYs9AXgHPkyw2T5bMzMlw+wCRW+LjAH/4ZxELDwAI+Ev4TAMmMPhG8uBM+EJu4wDR2zzbPH/4ZxENDwA0+En4SscF8uBk+EnIz4UIzoBvz0DJgQCg+wADKjD4RvLgTPhCbuMA1NTR2zzbPH/4ZxEQDwAu+Ez4S/hK+EP4QsjL/8s/z4POzMzJ7VQAWPhJ+ErHBfLgZGim/mCCEA7msoC+8uBkAfhr+Gz4ScjPhYjOgG/PQMmAQPsAADLtRNDT/9M/0wAx+kDU1NH4bPhr+Gr4Y/hiAAr4RvLgTAIK9KQg9KEVFAAUc29sIDAuNDkuMAAA",
-    code: "te6ccgECEwEAApcABCSK7VMg4wMgwP/jAiDA/uMC8gsQAgESAu7tRNDXScMB+GaNCGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAT4aSHbPNMAAY4SgQIA1xgg+QFY+EIg+GX5EPKo3tM/AfhDIbnytCD4I4ED6KiCCBt3QKC58rT4Y9MfAfgjvPK50x8B2zz4R27yfAUDA1jtRNDXScMB+GYi0NMD+kAw+GmpOADcIccA4wIh1w0f8rwh4wMB2zz4R27yfA8PAwRQIIIQFiYdULrjAiCCEEfGLdq64wIgghBLDZPluuMCIIIQbAEi07rjAgsJBwQCejD4Qm7jAPhG8nP6QZXU0dD6QN8g10rAAZPU0dDe1NTR+EUgbpIwcN74Qrry4GT4AFj4agH4a/hs2zx/+GcFDAIW7UTQ10nCAYqOgOIOBgKAcO1E0PQFjQhgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE+GqI+GuI+GyAQPQO8r3XC//4YnD4YxISA3Aw+Eby4Ez4Qm7jANHbPCKOHyTQ0wH6QDAxyM+HIM6AYs9AXgHPkyw2T5bMzMlw+wCRW+LjAH/4Zw4IDAAI+Ev4TAMmMPhG8uBM+EJu4wDR2zzbPH/4Zw4KDAA0+En4SscF8uBk+EnIz4UIzoBvz0DJgQCg+wADKjD4RvLgTPhCbuMA1NTR2zzbPH/4Zw4NDAAu+Ez4S/hK+EP4QsjL/8s/z4POzMzJ7VQAWPhJ+ErHBfLgZGim/mCCEA7msoC+8uBkAfhr+Gz4ScjPhYjOgG/PQMmAQPsAADLtRNDT/9M/0wAx+kDU1NH4bPhr+Gr4Y/hiAAr4RvLgTAIK9KQg9KESEQAUc29sIDAuNDkuMAAA",
-    codeHash: "25f62177008f3d717b0afcb051c6d9324abed88492e19255d27fbd30c24521a3",
+    tvc: "te6ccgECJAEABNQAAgE0AwEBAcACAEPQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgBCSK7VMg4wMgwP/jAiDA/uMC8gshBQQjAu7tRNDXScMB+GaNCGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAT4aSHbPNMAAY4SgQIA1xgg+QFY+EIg+GX5EPKo3tM/AfhDIbnytCD4I4ED6KiCCBt3QKC58rT4Y9MfAfgjvPK50x8B2zz4R27yfB0GA1jtRNDXScMB+GYi0NMD+kAw+GmpOADcIccA4wIh1w0f8rwh4wMB2zz4R27yfCAgBgIoIIIQR8Yt2rvjAiCCEGHE0fW74wIMBwIoIIIQSw2T5brjAiCCEGHE0fW64wIKCAOUMPhG8uBM+EJu4wD6QZXU0dD6QN/R2zwhjigj0NMB+kAwMcjPhyDOjQQAAAAAAAAAAAAAAAAOHE0fWM8Wy//JcPsAkTDi4wB/+GcfCRQBCNs8+QAXA3Aw+Eby4Ez4Qm7jANHbPCKOHyTQ0wH6QDAxyM+HIM6AYs9AXgHPkyw2T5bMzMlw+wCRW+LjAH/4Zx8LFAAI+Ez4TQRQIIIQCg2OyrrjAiCCEBYmHVC64wIgghBGfi3UuuMCIIIQR8Yt2rrjAhMRDw0DJjD4RvLgTPhCbuMA0ds82zx/+GcfDhQANPhJ+EvHBfLgZPhJyM+FCM6Ab89AyYEAoPsAA5Qw+Eby4Ez4Qm7jAPpBldTR0PpA3/pBldTR0PpA39HbPCGOHyPQ0wH6QDAxyM+HIM5xzwthAcjPkxn4t1LOzclw+wCRMOLjAH/4Zx8QFAJwjQhgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEWNs8WNs8+QBwyM+GQMoHy//J0DEXFgMqMPhG8uBM+EJu4wDU1NHbPNs8f/hnHxIUAFj4SfhLxwXy4GRopv5gghAO5rKAvvLgZAH4bPht+EnIz4WIzoBvz0DJgED7AAO4MPhCbuMA+Ebyc/pBldTR0PpA3yDXSsABk9TR0N7UINdKwAGT1NHQ3tTU0fhFIG6SMHDe+EK68uBk+CdvEIIQC+vCALry4GT4AFUC+GtY+GwB+G34ats82zx/+GcdFRQANPhN+Ez4S/hK+EP4QsjL/8s/z4PMzszMye1UAnT4S9s8+CjbPCD5AMjPigBAy//Iz4WIzxONBJAX14QAAAAAAAAAAAAAAAAAAcDPFszPkNFqvn/JcPsAFxYARG1wyMv/cFiAQPRDAXFYgED0Fsj0AMkByM+EgPQA9ADPgckBEsjO+ErQAcnbPBgCFiGLOK2zWMcFioriGhkBCAHbPMkbASYB1NQwEtDbPMjPjits1hLMzxHJGwFm1YsvSkDXJvQE0wkxINdKkdSOgOKLL0oY1yYwAcjPi9KQ9ACAIM8LCc+L0obMEszIzxHOHAEEiAEjAhbtRNDXScIBio6A4h8eA4Zw7UTQ9AWI+GqNCGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAT4a4j4bIj4bYBA9A7yvdcL//hicPhjIyMjADjtRNDT/9M/0wAx1PpA1NTR+G34bPhr+Gr4Y/hiAAr4RvLgTAIK9KQg9KEjIgAUc29sIDAuNDkuMAAA",
+    code: "te6ccgECIQEABKcABCSK7VMg4wMgwP/jAiDA/uMC8gseAgEgAu7tRNDXScMB+GaNCGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAT4aSHbPNMAAY4SgQIA1xgg+QFY+EIg+GX5EPKo3tM/AfhDIbnytCD4I4ED6KiCCBt3QKC58rT4Y9MfAfgjvPK50x8B2zz4R27yfBoDA1jtRNDXScMB+GYi0NMD+kAw+GmpOADcIccA4wIh1w0f8rwh4wMB2zz4R27yfB0dAwIoIIIQR8Yt2rvjAiCCEGHE0fW74wIJBAIoIIIQSw2T5brjAiCCEGHE0fW64wIHBQOUMPhG8uBM+EJu4wD6QZXU0dD6QN/R2zwhjigj0NMB+kAwMcjPhyDOjQQAAAAAAAAAAAAAAAAOHE0fWM8Wy//JcPsAkTDi4wB/+GccBhEBCNs8+QAUA3Aw+Eby4Ez4Qm7jANHbPCKOHyTQ0wH6QDAxyM+HIM6AYs9AXgHPkyw2T5bMzMlw+wCRW+LjAH/4ZxwIEQAI+Ez4TQRQIIIQCg2OyrrjAiCCEBYmHVC64wIgghBGfi3UuuMCIIIQR8Yt2rrjAhAODAoDJjD4RvLgTPhCbuMA0ds82zx/+GccCxEANPhJ+EvHBfLgZPhJyM+FCM6Ab89AyYEAoPsAA5Qw+Eby4Ez4Qm7jAPpBldTR0PpA3/pBldTR0PpA39HbPCGOHyPQ0wH6QDAxyM+HIM5xzwthAcjPkxn4t1LOzclw+wCRMOLjAH/4ZxwNEQJwjQhgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEWNs8WNs8+QBwyM+GQMoHy//J0DEUEwMqMPhG8uBM+EJu4wDU1NHbPNs8f/hnHA8RAFj4SfhLxwXy4GRopv5gghAO5rKAvvLgZAH4bPht+EnIz4WIzoBvz0DJgED7AAO4MPhCbuMA+Ebyc/pBldTR0PpA3yDXSsABk9TR0N7UINdKwAGT1NHQ3tTU0fhFIG6SMHDe+EK68uBk+CdvEIIQC+vCALry4GT4AFUC+GtY+GwB+G34ats82zx/+GcaEhEANPhN+Ez4S/hK+EP4QsjL/8s/z4PMzszMye1UAnT4S9s8+CjbPCD5AMjPigBAy//Iz4WIzxONBJAX14QAAAAAAAAAAAAAAAAAAcDPFszPkNFqvn/JcPsAFBMARG1wyMv/cFiAQPRDAXFYgED0Fsj0AMkByM+EgPQA9ADPgckBEsjO+ErQAcnbPBUCFiGLOK2zWMcFioriFxYBCAHbPMkYASYB1NQwEtDbPMjPjits1hLMzxHJGAFm1YsvSkDXJvQE0wkxINdKkdSOgOKLL0oY1yYwAcjPi9KQ9ACAIM8LCc+L0obMEszIzxHOGQEEiAEgAhbtRNDXScIBio6A4hwbA4Zw7UTQ9AWI+GqNCGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAT4a4j4bIj4bYBA9A7yvdcL//hicPhjICAgADjtRNDT/9M/0wAx1PpA1NTR+G34bPhr+Gr4Y/hiAAr4RvLgTAIK9KQg9KEgHwAUc29sIDAuNDkuMAAA",
+    codeHash: "a1962e6943fd0cb0fe36d88a3cf20812508c3702127ba6565052553168972eab",
 };
 module.exports = { VCContract };

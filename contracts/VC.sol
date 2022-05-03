@@ -3,20 +3,26 @@ pragma ton-solidity 0.49.0;
 pragma AbiHeader time;
 pragma AbiHeader expire;
 
-contract VC {
+import "./resolvers/IndexVCResolver.sol";
 
-    address _owner;
+contract VC is IndexVCResolver {
+
+    address _addrOwner;
 
     string _type;
     string _value;
 
-    constructor(address owner, string Type, string value) public {
+    constructor(address addrOwner, string Type, string value, TvmCell codeIndexVC) public {
         require(msg.pubkey() == tvm.pubkey());
+        require(address(this).balance == 0.2 ton);
         tvm.accept();
 
-        _owner = owner;
+        _addrOwner = addrOwner;
         _type = Type;
         _value = value;
+        _codeIndexVC = codeIndexVC;
+
+        deployIndex();
     }
 
     function setValue(string Type, string value) public onlyOwner() {
@@ -41,8 +47,17 @@ contract VC {
     }
 
 
+    function deployIndex() private {
+        TvmCell code = _buildIndexVCCode(_addrOwner);
+        TvmCell state = _buildIndexVCState(code, address(this));
+        new IndexVC {
+            stateInit: state,
+            value: 0.1 ton
+        } ();
+    }
+
     modifier onlyOwner() {
-        require(msg.sender == _owner);
+        require(msg.sender == _addrOwner);
         _;
     }
 

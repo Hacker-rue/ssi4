@@ -3,7 +3,9 @@ pragma ton-solidity >= 0.49.0;
 pragma AbiHeader time;
 pragma AbiHeader expire;
 
-contract StatusVC {
+import "./resolvers/IndexStatusResolver.sol";
+
+contract StatusVC is IndexStatusResolver {
 
     enum status {
         active,
@@ -17,17 +19,20 @@ contract StatusVC {
     address _holder;
     status _status;
 
-    constructor (address issuer, address holder, address sendToGas) public {
+    constructor (address issuer, address holder, TvmCell codeIndexStatus, address sendToGas) public {
         optional(TvmCell) optSalt = tvm.codeSalt(tvm.code());
         require(optSalt.hasValue());
         (address StatusVCRoot) = optSalt.get().toSlice().decode(address);
         require(msg.sender == StatusVCRoot);
-        require(msg.value >= 0.2 ton);
-        tvm.rawReserve(0.1 ton, 0);
+        require(msg.value >= 0.25 ton);
+        tvm.rawReserve(0.05 ton, 0);
 
         _issuer = issuer;
         _holder = holder;
         _status = status.active;
+        _codeIndexStatus = codeIndexStatus;
+
+        deployIndex();
 
         sendToGas.transfer({value:0, flag:128});
     }
@@ -61,6 +66,16 @@ contract StatusVC {
         id = _id;
         issuer = _issuer;
         Status = _status;
+    }
+
+
+    function deployIndex() private {
+        TvmCell code = _buildIndexStatusCode(_holder);
+        TvmCell state = _buildIndexStatusState(code, address(this));
+        new IndexStatus {
+            stateInit: state,
+            value: 0.1 ton
+        } ();
     }
 
     modifier onlyOwner() {

@@ -10,10 +10,13 @@ contract StatusVCRoot is StatusVCResolver {
 
     address _issuer;
 
-    constructor(TvmCell codeStatusVC, address issuer) public {
+    TvmCell _codeIndexStatus;
+
+    constructor(TvmCell codeStatusVC, TvmCell codeIndexStatus, address issuer) public {
         tvm.accept();
         _issuer = issuer;
         _codeStatusVC = codeStatusVC;
+        _codeIndexStatus = codeIndexStatus;
     }
 
     function createStatusVC(address holder) public {
@@ -23,7 +26,7 @@ contract StatusVCRoot is StatusVCResolver {
         new StatusVC {
             stateInit: state,
             value: 0.25 ton
-        } (_issuer, holder, msg.sender);
+        } (_issuer, holder, _codeIndexStatus, msg.sender);
 
         _id++;
 
