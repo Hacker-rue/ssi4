@@ -79,7 +79,7 @@ app.post("/create", cors(), async (req, res) => {
                 status = await login(req.body.did, req.body.signature, session[req.body.did].value)
                 if(status) {
                     
-                    var vc = await create(req.body.type, req.body.did, req.body.holder)
+                    var vc = await create(req.body.did, req.body.holder)
 
                     res.append("Content-Type", "application/json")
                     res.statusCode(200).send(JSON.stringify(vc))
